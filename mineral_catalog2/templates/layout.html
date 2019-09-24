@@ -1,0 +1,15 @@
+{% load static from staticfiles %}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ayman's Minerals: A magnificent catalog of minerals</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href='https://fonts.googleapis.com/css?family=Work+Sans:400,500' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Cousine' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="{% static 'css/myglobal.css' %}">
+    </head>
+    <body>
+        {% block content %}{% endblock %}
+    </body>
+</html>
