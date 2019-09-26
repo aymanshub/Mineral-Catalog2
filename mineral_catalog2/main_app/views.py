@@ -3,18 +3,21 @@ from django.shortcuts import render, get_object_or_404
 from .models import Mineral
 
 
-def mineral_list(request):
+def mineral_list(request, letter='a'):
     """
-    Minerals list view, gets all the minerals entries objects
+    Minerals list view, gets all the requested minerals objects
     in addition, chooses a random mineral object.
     Finally sends for a template rendering
     :return: rendered html template object
     """
-    minerals = Mineral.objects.all()
-    random_mineral = random.choice(minerals)
+    minerals_all = Mineral.objects.all()
+    minerals_by_letter = Mineral.objects.filter(name__startswith=letter)
+    random_mineral = random.choice(minerals_all)
     return render(request, 'main_app/index.html',
-                  {'minerals': minerals,
-                   'random_mineral': random_mineral})
+                  {'minerals': minerals_by_letter,
+                   'random_mineral': random_mineral,
+                   'selected_letter': letter,
+                   })
 
 
 def mineral_detail(request, pk):

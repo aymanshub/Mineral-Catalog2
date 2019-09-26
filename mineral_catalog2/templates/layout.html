@@ -12,7 +12,17 @@
     <body>
         {% block content %}{% endblock %}
     <div class="minerals__random">
-        <a class="minerals__anchor" href="{% url 'minerals:detail' pk=random_mineral.pk %}">Show random mineral</a>
+      <div id="letters" style="margin-bottom: 10px">
+        {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
+          {% if letter == selected_letter %}
+            <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: bold; color: #DCF63B">{{ letter|upper }}</a>
+          {% else %}
+            <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: normal">{{ letter|upper }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <a class="minerals__anchor" href="{% url 'minerals:detail' pk=random_mineral.pk %}">Show random mineral</a>
     </div>
+    <script src="{% static "js/app.js" %}"></script>
     </body>
 </html>
