@@ -10,19 +10,38 @@
         <link rel="stylesheet" href="{% static 'css/myglobal.css' %}">
     </head>
     <body>
+      <div class="bounds">
+        <div class="">
+          <form action="{% url 'minerals:search' %}", method="GET">
+                <input type="search" name="q">
+                <input type="submit" value="Search">
+          </form>
+        </div>
+        <div class="grid-100">
+            <a href="{% url 'minerals:list' %}">
+                <svg class="logo" viewBox="0 0 127.6 84.8" preserveAspectRation="xMinYMin meet">
+                    <polygon points="42.7,84.8 49.6,79.4 40,62.5 51.2,43.5 51.2,43.5 25,0 0,55.6 "/>
+                    <polygon class="logo--middle" points="52.9,79.5 52.9,79.5 84.8,80.1 59.7,35 43.3,62.4 "/>
+                    <polygon points="127.6,61.4 127.6,61.4 110.3,13.5 110.3,13.5 70.3,48.1 70.3,48.1 88.3,80.5 95.3,81.4 95.3,81.4 "/>
+                </svg>
+                <h1 class="logo__name text-centered">Ayman's Minerals</h1>
+            </a>
+            <p class="logo__text text-centered">They're not rocks!</p>
+        </div>
         {% block content %}{% endblock %}
-    <div class="minerals__random">
-      <div id="letters" style="margin-bottom: 10px">
-        {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
-          {% if letter == selected_letter %}
-            <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: bold; color: #DCF63B">{{ letter|upper }}</a>
-          {% else %}
-            <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: normal">{{ letter|upper }}</a>
-          {% endif %}
-        {% endfor %}
       </div>
-      <a class="minerals__anchor" href="{% url 'minerals:detail' pk=random_mineral.pk %}">Show random mineral</a>
-    </div>
-    <script src="{% static "js/app.js" %}"></script>
-    </body>
+      <div class="minerals__random">
+        <div id="letters" style="margin-bottom: 10px">
+          {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
+            {% if letter == selected_letter %}
+              <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: bold; color: #DCF63B">{{ letter|upper }}</a>
+            {% else %}
+              <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: normal">{{ letter|upper }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+        <a class="minerals__anchor" href="{% url 'minerals:detail' pk=random_mineral.pk %}">Show random mineral</a>
+      </div>
+      <script src="{% static "js/app.js" %}"></script>
+      </body>
 </html>

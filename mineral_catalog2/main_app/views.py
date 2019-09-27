@@ -7,7 +7,6 @@ def mineral_list(request, letter='a'):
     """
     Minerals list view, gets all the requested minerals objects
     in addition, chooses a random mineral object.
-    Finally sends for a template rendering
     :return: rendered html template object
     """
     minerals_all = Mineral.objects.all()
@@ -17,6 +16,24 @@ def mineral_list(request, letter='a'):
                   {'minerals': minerals_by_letter,
                    'random_mineral': random_mineral,
                    'selected_letter': letter,
+                   })
+
+
+def search(request):
+    """
+    Gets all the minerals objects whose name contains the search text.
+    The names of the minerals that match the search will
+    be displayed in the list view.
+    in addition, chooses a random mineral object.
+    :return: rendered html template object
+    """
+    term = request.GET.get('q')
+    minerals_found = Mineral.objects.filter(name__icontains=term)
+    minerals_all = Mineral.objects.all()
+    random_mineral = random.choice(minerals_all)
+    return render(request, 'main_app/index.html',
+                  {'minerals': minerals_found,
+                   'random_mineral': random_mineral,
                    })
 
 
