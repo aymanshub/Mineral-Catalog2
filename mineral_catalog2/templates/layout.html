@@ -28,15 +28,26 @@
             </a>
             <p class="logo__text text-centered">They're not rocks!</p>
         </div>
+        <div class="grid-15 categories__container">
+          <ul class="">
+            {% for category in categories %}
+              {% if category and category != 'Tectosilicate < br/>Scapolite group' %}
+{#                <li>#}
+                  <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}">{{ category|title }}</a>
+{#                </li>#}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
         {% block content %}{% endblock %}
       </div>
       <div class="minerals__random">
         <div id="letters" style="margin-bottom: 10px">
           {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
             {% if letter == selected_letter %}
-              <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: bold; color: #DCF63B">{{ letter|upper }}</a>
+              <a id="{{ letter }}" href="{% url 'minerals:list_by_letter' letter=letter %}" class="minerals__anchor" style="font-weight: bold; color: #DCF63B">{{ letter|upper }}</a>
             {% else %}
-              <a id="{{ letter }}" href="{% url 'minerals:list' letter=letter %}" class="minerals__anchor" style="font-weight: normal">{{ letter|upper }}</a>
+              <a id="{{ letter }}" href="{% url 'minerals:list_by_letter' letter=letter %}" class="minerals__anchor" style="font-weight: normal">{{ letter|upper }}</a>
             {% endif %}
           {% endfor %}
         </div>

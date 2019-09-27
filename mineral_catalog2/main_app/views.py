@@ -10,12 +10,15 @@ def mineral_list(request, letter='a'):
     :return: rendered html template object
     """
     minerals_all = Mineral.objects.all()
+    categories = Mineral.objects.values_list('category', flat=True)\
+        .distinct().order_by()
     minerals_by_letter = Mineral.objects.filter(name__startswith=letter)
     random_mineral = random.choice(minerals_all)
     return render(request, 'main_app/index.html',
                   {'minerals': minerals_by_letter,
                    'random_mineral': random_mineral,
                    'selected_letter': letter,
+                   'categories': categories,
                    })
 
 
@@ -34,6 +37,24 @@ def search(request):
     return render(request, 'main_app/index.html',
                   {'minerals': minerals_found,
                    'random_mineral': random_mineral,
+                   })
+
+
+def category_list(request, category):
+    """
+    Gets all the minerals objects belonging to the category argument
+    in addition, chooses a random mineral object.
+    :return: rendered html template object
+    """
+    minerals_all = Mineral.objects.all()
+    categories = Mineral.objects.values_list('category', flat=True)\
+        .distinct().order_by()
+    minerals_by_category = Mineral.objects.filter(category__iexact=category)
+    random_mineral = random.choice(minerals_all)
+    return render(request, 'main_app/index.html',
+                  {'minerals': minerals_by_category,
+                   'random_mineral': random_mineral,
+                   'categories': categories,
                    })
 
 
