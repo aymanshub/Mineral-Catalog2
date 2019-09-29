@@ -32,9 +32,11 @@
           <ul class="">
             {% for category in categories %}
               {% if category and category != 'Tectosilicate < br/>Scapolite group' %}
-{#                <li>#}
-                  <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}">{{ category|title }}</a>
-{#                </li>#}
+                {% if category == selected_category %}
+                    <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ category|title }}</a>
+                {% else %}
+                    <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}" style="font-weight: normal">{{ category|title }}</a>
+                {% endif %}
               {% endif %}
             {% endfor %}
           </ul>

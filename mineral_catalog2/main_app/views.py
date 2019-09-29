@@ -55,6 +55,7 @@ def category_list(request, category):
                   {'minerals': minerals_by_category,
                    'random_mineral': random_mineral,
                    'categories': categories,
+                   'selected_category': category,
                    })
 
 
@@ -97,12 +98,16 @@ def mineral_detail(request, pk):
             net_mineral_attributes.append({category: attribute_value})
     # choosing a random mineral entry object
     random_mineral = random.choice(Mineral.objects.all())
+    # getting all distinct categories
+    categories = Mineral.objects.values_list('category', flat=True) \
+        .distinct().order_by()
     return render(request,
                   'main_app/mineral_detail.html',
                   {
                       'mineral': mineral,
                       'net_mineral_attributes': net_mineral_attributes,
                       'random_mineral': random_mineral,
+                      'categories': categories,
                   }
                   )
 
