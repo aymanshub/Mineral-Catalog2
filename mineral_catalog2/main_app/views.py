@@ -33,10 +33,14 @@ def search(request):
     term = request.GET.get('q')
     minerals_found = Mineral.objects.filter(name__icontains=term)
     minerals_all = Mineral.objects.all()
+    # getting all distinct categories
+    categories = Mineral.objects.values_list('category', flat=True) \
+        .distinct().order_by()
     random_mineral = random.choice(minerals_all)
     return render(request, 'main_app/index.html',
                   {'minerals': minerals_found,
                    'random_mineral': random_mineral,
+                   'categories': categories,
                    })
 
 
