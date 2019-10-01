@@ -28,14 +28,14 @@
             </a>
             <p class="logo__text text-centered">They're not rocks!</p>
         </div>
-        <div class="grid-15 categories__container">
+        <div class="grid-20 categories__container">
           <ul class="">
-            {% for category in categories %}
-              {% if category and category != 'Tectosilicate < br/>Scapolite group' %}
-                {% if category == selected_category %}
-                    <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ category|title }}</a>
+            {% for slugged in categories_list %}
+              {% if slugged %}
+                {% if slugged == selected_category %}
+                    <a name={{ slugged }} class="category__anchor" href="{% url 'minerals:list_by_category' slugged_category=slugged %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ slugged|title }}</a>
                 {% else %}
-                    <a class="category__anchor" href="{% url 'minerals:list_by_category' category=category %}" style="font-weight: normal">{{ category|title }}</a>
+                    <a name={{ slugged }} class="category__anchor" href="{% url 'minerals:list_by_category' slugged_category=slugged %}" style="font-weight: normal">{{ slugged|title }}</a>
                 {% endif %}
               {% endif %}
             {% endfor %}
