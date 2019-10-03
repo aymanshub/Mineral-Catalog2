@@ -5,26 +5,6 @@ from django.db.models import Q
 from django.template.defaultfilters import slugify
 
 
-def get_values_of(attribute_name, slugged=False):
-    """
-    Gets all existing values of a certain attribute
-    :param attribute_name: string of the attribute name in the minerals table
-    :param slugged: boolean, if to return a slugged version or raw
-    :return: a list having all the values for the requested attribute
-    """
-    # getting all distinct attribute names
-    names_raw = Mineral.objects.values_list(attribute_name, flat=True) \
-        .distinct().order_by(attribute_name)
-
-    names_raw = list(names_raw)
-
-    if slugged:
-        slugged_list = [slugify(name) for name in names_raw]
-        return slugged_list
-    else:
-        return names_raw
-
-
 def raw_values(attribute_name):
     """
     Gets all values of the requested attribute_name based on the DB values
