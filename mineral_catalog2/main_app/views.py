@@ -5,29 +5,87 @@ from django.db.models import Q
 from django.template.defaultfilters import slugify
 
 
-def get_categories(slugged=False):
+def get_values_of(attribute_name, slugged=False):
+    """
+    Gets all existing values of a certain attribute
+    :param attribute_name: string of the attribute name in the minerals table
+    :param slugged: boolean, if to return a slugged version or raw
+    :return: a list having all the values for the requested attribute
+    """
+    # getting all distinct attribute names
+    names_raw = Mineral.objects.values_list(attribute_name, flat=True) \
+        .distinct().order_by(attribute_name)
 
-    # getting all distinct categories
-    categories_raw = Mineral.objects.values_list('category', flat=True) \
-        .distinct().order_by('category')
-
-    categories_raw = list(categories_raw)
+    names_raw = list(names_raw)
 
     if slugged:
-        slugged_list = [slugify(cate) for cate in categories_raw]
+        slugged_list = [slugify(name) for name in names_raw]
         return slugged_list
     else:
-        return categories_raw
+        return names_raw
+
+
+def raw_values(attribute_name):
+    """
+    Gets all values of the requested attribute_name based on the DB values
+    :param attribute_name: String representation of the attribute name
+    :return: A new list, having distinct values of the attribute name parameter
+    """
+    # getting all distinct attribute names
+    names_raw = Mineral.objects.values_list(attribute_name, flat=True) \
+        .distinct().order_by(attribute_name)
+
+    return list(names_raw)
+
+
+def slug_em(names):
+    """
+    Slugs all the names list items
+    :param names: String list of names
+    :return: a new
+    """
+    return [slugify(name) for name in names]
 
 
 def get_random_mineral():
+    """
+    Gets a random mineral from the existing minerals table
+    :return: A single Mineral object
+    """
     minerals_all = Mineral.objects.all()
     random_mineral = random.choice(minerals_all)
 
     return random_mineral
 
 
-def mineral_list(request, letter='a', slugged_category=None):
+def get_minerals_by(attribute_name, raw_values_list, slugged_values_list,
+                    selected_value):
+    """
+    Gets all minerals having attribute_name with the selected_value
+    :param attribute_name: string of Mineral attribute
+    :param selected_value: string of the selected Mineral attribute value
+    :return: A Queryset of all minerals objects having the attribute_name with
+    selected_value
+    """
+
+    # finding out all the raw categories that belong to the same slug
+    value_indexes = []
+    for index, item in enumerate(slugged_values_list):
+        if item == selected_value:
+            value_indexes.append(index)
+
+    lookup = attribute_name+'__'+'in'
+
+    minerals_by_attribute = Mineral.objects.filter(
+        **{lookup: [raw_values_list[index] for index in value_indexes]}
+    )
+
+    return minerals_by_attribute
+
+
+def mineral_list(request, letter='a',
+                 selected_category=None,
+                 selected_streak=None):
     """
     Minerals list view, gets all the requested minerals objects
     either by their first letter name or by category
@@ -35,24 +93,24 @@ def mineral_list(request, letter='a', slugged_category=None):
     :return: rendered html template object
     """
 
-    raw_list = get_categories(slugged=False)
-    # slugged_list = list(zip(*categories_list_noneed))[0]
-    slugged_list = get_categories(slugged=True)
+    # removing all duplicates, having a unique ordered list
+    raw_categories = raw_values('category')
+    slugged_categories = slug_em(raw_categories)
+    categories_list = sorted(set(slugged_categories))
 
-    # removing all duplicate slugs having unique ordered list
-    categories_list = sorted(set(slugged_list))
+    raw_streaks = raw_values('streak')
+    slugged_streaks = slug_em(raw_streaks)
+    streaks_list = sorted(set(slugged_streaks))
 
-    if slugged_category:
-        # finding out all the raw categories that belong to the same slug
-        category_indexes = []
-        for index, item in enumerate(slugged_list):
-            if item == slugged_category:
-                category_indexes.append(index)
-
-        minerals_by_category = Mineral.objects.filter(
-            category__in=[raw_list[index] for index in category_indexes]
-        )
-        minerals = minerals_by_category
+    if selected_category:
+        minerals = get_minerals_by('category', raw_categories,
+                                   slugged_categories, selected_category)
+        selected_streak = None
+        letter = None
+    elif selected_streak:
+        minerals = get_minerals_by('streak', raw_streaks,
+                                   slugged_streaks, selected_streak)
+        selected_category = None
         letter = None
     else:
         minerals_by_letter = Mineral.objects.filter(name__startswith=letter)
@@ -65,8 +123,10 @@ def mineral_list(request, letter='a', slugged_category=None):
                   {'minerals': minerals,
                    'random_mineral': random_mineral,
                    'categories_list': categories_list,
+                   'streaks_list': streaks_list,
                    'selected_letter': letter,
-                   'selected_category': slugged_category,
+                   'selected_category': selected_category,
+                   'selected_streak': selected_streak,
                    })
 
 
@@ -103,15 +163,21 @@ def search(request):
         Q(group__icontains=term)
     )
 
-    slugged_list = get_categories(slugged=True)
-    # removing all duplicate slugs having unique ordered list
-    categories_list = sorted(set(slugged_list))
+    raw_categories = raw_values('category')
+    slugged_categories = slug_em(raw_categories)
+    categories_list = sorted(set(slugged_categories))
+
+    raw_streaks = raw_values('streak')
+    slugged_streaks = slug_em(raw_streaks)
+    streaks_list = sorted(set(slugged_streaks))
+
     random_mineral = get_random_mineral()
 
     return render(request, 'main_app/index.html',
                   {'minerals': minerals_found,
                    'random_mineral': random_mineral,
                    'categories_list': categories_list,
+                   'streaks_list': streaks_list,
                    })
 
 
@@ -156,11 +222,13 @@ def mineral_detail(request, pk):
     # choosing a random mineral entry object
     random_mineral = get_random_mineral()
 
-    # slugging all categories
-    slugged_list = get_categories(slugged=True)
+    raw_categories = raw_values('category')
+    slugged_categories = slug_em(raw_categories)
+    categories_list = sorted(set(slugged_categories))
 
-    # removing all duplicate slugs having unique ordered list
-    categories_list = sorted(set(slugged_list))
+    raw_streaks = raw_values('streak')
+    slugged_streaks = slug_em(raw_streaks)
+    streaks_list = sorted(set(slugged_streaks))
 
     return render(request,
                   'main_app/mineral_detail.html',
@@ -169,6 +237,7 @@ def mineral_detail(request, pk):
                       'net_mineral_attributes': net_mineral_attributes,
                       'random_mineral': random_mineral,
                       'categories_list': categories_list,
+                      'streaks_list': streaks_list,
                   }
                   )
 

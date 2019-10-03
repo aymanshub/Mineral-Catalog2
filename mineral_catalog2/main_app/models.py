@@ -4,7 +4,6 @@ Models definition, fields and methods
 from django.db import models
 
 
-
 class Mineral(models.Model):
     name = models.CharField(max_length=255)
     image_filename = models.CharField(max_length=255)
@@ -26,10 +25,6 @@ class Mineral(models.Model):
     crystal_habit = models.CharField(max_length=511)
     specific_gravity = models.CharField(max_length=255)
     group = models.CharField(max_length=255)
-
-    # @property
-    # def slugged_cat(self):
-    #     return slugify(self.category)
 
 
 

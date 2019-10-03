@@ -29,19 +29,32 @@
             <p class="logo__text text-centered">They're not rocks!</p>
         </div>
         <div class="grid-20 categories__container">
-          <ul class="">
-            {% for slugged in categories_list %}
-              {% if slugged %}
-                {% if slugged == selected_category %}
-                    <a name={{ slugged }} class="category__anchor" href="{% url 'minerals:list_by_category' slugged_category=slugged %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ slugged|title }}</a>
+          <ul style="font-weight: bolder">Categories:
+            {% for category in categories_list %}
+              {% if category %}
+                {% if category == selected_category %}
+                    <a name={{ category }} class="category__anchor" href="{% url 'minerals:list_by_category' selected_category=category %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ category|title }}</a>
                 {% else %}
-                    <a name={{ slugged }} class="category__anchor" href="{% url 'minerals:list_by_category' slugged_category=slugged %}" style="font-weight: normal">{{ slugged|title }}</a>
+                    <a name={{ category }} class="category__anchor" href="{% url 'minerals:list_by_category' selected_category=category %}" style="font-weight: normal">{{ category|title }}</a>
                 {% endif %}
               {% endif %}
             {% endfor %}
           </ul>
         </div>
         {% block content %}{% endblock %}
+        <div class="grid-15 categories__container">
+          <ul style="font-weight: bolder;">Streaks:
+            {% for streak in streaks_list %}
+              {% if streak %}
+                {% if streak == selected_streak %}
+                    <a name={{ streak }} class="category__anchor" href="{% url 'minerals:list_by_streak' selected_streak=streak %}" style="font-weight: normal; background-color: #384033; color: #DCF63B">{{ streak|title }}</a>
+                {% else %}
+                    <a name={{ streak }} class="category__anchor" href="{% url 'minerals:list_by_streak' selected_streak=streak %}" style="font-weight: normal">{{ streak|title }}</a>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
       </div>
       <div class="minerals__random">
         <div id="letters" style="margin-bottom: 10px">
@@ -55,6 +68,5 @@
         </div>
         <a class="minerals__anchor" href="{% url 'minerals:detail' pk=random_mineral.pk %}">Show random mineral</a>
       </div>
-      <script src="{% static "js/app.js" %}"></script>
       </body>
 </html>
