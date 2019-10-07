@@ -16,6 +16,7 @@ def combine_names(apps, schema_editor):
         for rock in rocks:
             m = Mineral(**rock)
             m.save()
+        print(str(len(rocks)) + ' were loaded')
 
 
 class Migration(migrations.Migration):
