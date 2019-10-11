@@ -22,7 +22,7 @@ def slug_em(names):
     """
     Slugs all the names list items
     :param names: String list of names
-    :return: a new
+    :return: a new slugged names list
     """
     return [slugify(name) for name in names]
 
@@ -42,6 +42,8 @@ def get_minerals_by(attribute_name, raw_values_list, slugged_values_list,
                     selected_value):
     """
     Gets all minerals having attribute_name with the selected_value
+    :param slugged_values_list: helper list of slugged_values_list
+    :param raw_values_list: helper list of raw_values_list
     :param attribute_name: string of Mineral attribute
     :param selected_value: string of the selected Mineral attribute value
     :return: A Queryset of all minerals objects having the attribute_name with
@@ -135,7 +137,7 @@ def search(request):
         Q(mohs_scale_hardness__icontains=term) |
         Q(luster__icontains=term) |
         Q(streak__icontains=term) |
-        Q(diaphaneity__icontains=term)|
+        Q(diaphaneity__icontains=term) |
         Q(optical_properties__icontains=term) |
         Q(refractive_index__icontains=term) |
         Q(crystal_habit__icontains=term) |
@@ -220,6 +222,3 @@ def mineral_detail(request, pk):
                       'streaks_list': streaks_list,
                   }
                   )
-
-
-
