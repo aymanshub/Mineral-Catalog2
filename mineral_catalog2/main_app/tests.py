@@ -1,4 +1,4 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.urls import reverse
 from django.template.defaultfilters import slugify
 from django.db import models
@@ -29,9 +29,6 @@ class MineralViewTests(TestCase):
             category='new',
             streak='light gray',
         )
-
-        # Every test needs access to the request factory.
-        self.factory = RequestFactory()
 
     def test_homepage_default_view(self):
         response = self.client.get(reverse('minerals:list'))
